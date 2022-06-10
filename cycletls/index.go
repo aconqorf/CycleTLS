@@ -3,8 +3,6 @@ package cycletls
 import (
 	"encoding/json"
 	"flag"
-	http "github.com/Danny-Dasilva/fhttp"
-	"github.com/gorilla/websocket"
 	"io/ioutil"
 	"log"
 	nhttp "net/http"
@@ -12,6 +10,9 @@ import (
 	"os"
 	"runtime"
 	"strings"
+
+	http "github.com/Danny-Dasilva/fhttp"
+	"github.com/gorilla/websocket"
 )
 
 // Options sets CycleTLS client options
@@ -23,7 +24,7 @@ type Options struct {
 	Ja3             string            `json:"ja3"`
 	UserAgent       string            `json:"userAgent"`
 	Proxy           string            `json:"proxy"`
-	Cookies         []Cookie          `json:"cookies"`
+	CookieJar       http.CookieJar    `json:"cookies"`
 	Timeout         int               `json:"timeout"`
 	DisableRedirect bool              `json:"disableRedirect"`
 	HeaderOrder     []string          `json:"headerOrder"`
@@ -72,7 +73,7 @@ func processRequest(request cycleTLSRequest) (result fullRequest) {
 	var browser = browser{
 		JA3:       request.Options.Ja3,
 		UserAgent: request.Options.UserAgent,
-		Cookies:   request.Options.Cookies,
+		CookieJar: request.Options.CookieJar,
 	}
 
 	client, err := newClient(

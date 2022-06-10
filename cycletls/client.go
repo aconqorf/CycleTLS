@@ -12,7 +12,7 @@ type browser struct {
 	// Return a greeting that embeds the name in a message.
 	JA3       string
 	UserAgent string
-	Cookies   []Cookie
+	CookieJar http.CookieJar
 }
 
 var disabledRedirect = func(req *http.Request, via []*http.Request) error {
@@ -24,10 +24,13 @@ func clientBuilder(browser browser, dialer proxy.ContextDialer, timeout int, dis
 	if timeout == 0 {
 		timeout = 15
 	}
+
 	client := http.Client{
+		Jar:       browser.CookieJar,
 		Transport: newRoundTripper(browser, dialer),
 		Timeout:   time.Duration(timeout) * time.Second,
 	}
+
 	//if disableRedirect is set to true httpclient will not redirect
 	if disableRedirect {
 		client.CheckRedirect = disabledRedirect

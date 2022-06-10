@@ -23,7 +23,7 @@ type roundTripper struct {
 	JA3       string
 	UserAgent string
 
-	Cookies           []Cookie
+	// Cookies           []Cookie
 	cachedConnections map[string]net.Conn
 	cachedTransports  map[string]http.RoundTripper
 
@@ -32,20 +32,21 @@ type roundTripper struct {
 
 func (rt *roundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	// Fix this later for proper cookie parsing
-	for _, properties := range rt.Cookies {
-		req.AddCookie(&http.Cookie{Name: properties.Name,
-			Value:      properties.Value,
-			Path:       properties.Path,
-			Domain:     properties.Domain,
-			Expires:    properties.JSONExpires.Time, //TODO: scuffed af
-			RawExpires: properties.RawExpires,
-			MaxAge:     properties.MaxAge,
-			HttpOnly:   properties.HTTPOnly,
-			Secure:     properties.Secure,
-			Raw:        properties.Raw,
-			Unparsed:   properties.Unparsed,
-		})
-	}
+	//for _, properties := range rt.Cookies {
+	//	req.AddCookie(&http.Cookie{Name: properties.Name,
+	//		Value:      properties.Value,
+	//		Path:       properties.Path,
+	//		Domain:     properties.Domain,
+	//		Expires:    properties.JSONExpires.Time, //TODO: scuffed af
+	//		RawExpires: properties.RawExpires,
+	//		MaxAge:     properties.MaxAge,
+	//		HttpOnly:   properties.HTTPOnly,
+	//		Secure:     properties.Secure,
+	//		Raw:        properties.Raw,
+	//		Unparsed:   properties.Unparsed,
+	//	})
+	//}
+
 	req.Header.Set("User-Agent", rt.UserAgent)
 	addr := rt.getDialTLSAddr(req)
 	if _, ok := rt.cachedTransports[addr]; !ok {
@@ -171,9 +172,9 @@ func newRoundTripper(browser browser, dialer ...proxy.ContextDialer) http.RoundT
 		return &roundTripper{
 			dialer: dialer[0],
 
-			JA3:               browser.JA3,
-			UserAgent:         browser.UserAgent,
-			Cookies:           browser.Cookies,
+			JA3:       browser.JA3,
+			UserAgent: browser.UserAgent,
+			// Cookies:           browser.Cookies,
 			cachedTransports:  make(map[string]http.RoundTripper),
 			cachedConnections: make(map[string]net.Conn),
 		}
@@ -182,9 +183,9 @@ func newRoundTripper(browser browser, dialer ...proxy.ContextDialer) http.RoundT
 	return &roundTripper{
 		dialer: proxy.Direct,
 
-		JA3:               browser.JA3,
-		UserAgent:         browser.UserAgent,
-		Cookies:           browser.Cookies,
+		JA3:       browser.JA3,
+		UserAgent: browser.UserAgent,
+		// Cookies:           browser.Cookies,
 		cachedTransports:  make(map[string]http.RoundTripper),
 		cachedConnections: make(map[string]net.Conn),
 	}
