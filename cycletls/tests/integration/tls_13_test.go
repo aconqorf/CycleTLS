@@ -8,7 +8,7 @@ import (
 	// "encoding/json"
 	"testing"
 
-	cycletls "github.com/Danny-Dasilva/CycleTLS/cycletls"
+	cycletls "github.com/aconqorf/CycleTLS/cycletls"
 )
 
 var TLS13Results = []CycleTLSOptions{
